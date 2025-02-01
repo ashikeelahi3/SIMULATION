@@ -35,7 +35,7 @@ simulate_coin_flips <- function(n_trials, n_flips, prob_heads = 0.5) {
         x = "Proportion of Heads",
         y = "Density") +
     theme_minimal() +
-    scale_x_continuous(limits = c(0, 1)) +
+    scale_x_continuous(limits = c(0.3, 0.7)) +
     annotate("text", x = 0.5, y = 8, 
             label = paste("Mean:", round(mean(fair_props), 3)),
             color = "red") +
