@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Random Number Generator</title>
+  <script src="https://cdn.jsdelivr.net/npm/@rstudio/webr@0.1.0/dist/webr.min.js"></script>
+</head>
+<body>
+  <h1>Random Number Generator</h1>
+
+  <!-- Form for user input -->
+  <form id="randomForm">
+    <label for="number">Number of Random Numbers:</label>
+    <input type="number" id="number" name="number" min="1" required>
+    <button type="submit">Generate</button>
+  </form>
+
+  <!-- Output area for random numbers -->
+  <h2>Generated Numbers:</h2>
+  <pre id="output"></pre>
+
+  <!-- Output area for the histogram -->
+  <h2>Histogram:</h2>
+  <div id="histogram"></div>
+
+  <!-- JavaScript to handle form submission and call R code -->
+  <script>
+    document.getElementById('randomForm').addEventListener('submit', function(event) {
+      event.preventDefault();  // Prevent form from submitting normally
+
+      // Get the user input
+      const num = document.getElementById('number').value;
+
+      // Call the R function to generate random numbers
+      webr.evalFile('generate_random.R', `generateRandomNumbers(${num})`).then(function(result) {
+        // Display the generated random numbers
+        document.getElementById('output').textContent = JSON.stringify(result.random_numbers, null, 2);
+      }).catch(function(error) {
+        console.error('Error:', error);
+        document.getElementById('output').textContent = 'An error occurred while generating random numbers.';
+      });
+
+      // Call the R function to generate the histogram
+      webr.evalFile('generate_random.R', `generateHistogram(${num})`).then(function(result) {
+        // Display the histogram image
+        const img = new Image();
+        img.src = result.image;
+        document.getElementById('histogram').innerHTML = '';
+        document.getElementById('histogram').appendChild(img);
+      }).catch(function(error) {
+        console.error('Error:', error);
+        document.getElementById('histogram').textContent = 'An error occurred while generating the histogram.';
+      });
+    });
+  </script>
+</body>
+</html>
